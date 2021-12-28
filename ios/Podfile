@@ -2,7 +2,7 @@ require File.join(File.dirname(`node --print "require.resolve('expo/package.json
 require File.join(File.dirname(`node --print "require.resolve('react-native/package.json')"`), "scripts/react_native_pods")
 require File.join(File.dirname(`node --print "require.resolve('@react-native-community/cli-platform-ios/package.json')"`), "native_modules")
 
-platform :ios, '12.0'
+platform :ios, '11.0'
 
 require 'json'
 podfile_properties = JSON.parse(File.read('./Podfile.properties.json')) rescue {}
@@ -22,18 +22,42 @@ target 'recipeapp' do
   #   use_flipper!('Flipper' => '0.75.1', 'Flipper-Folly' => '2.5.3', 'Flipper-RSocket' => '1.3.1')
   # end
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   post_install do |installer|
+    fix_deployment_target(installer)
     react_native_post_install(installer)
 
     # Workaround `Cycle inside FBReactNativeSpec` error for react-native 0.64
     # Reference: https://github.com/software-mansion/react-native-screens/issues/842#issuecomment-812543933
     installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        # config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
+      end
       if (target.name&.eql?('FBReactNativeSpec'))
         target.build_phases.each do |build_phase|
           if (build_phase.respond_to?(:name) && build_phase.name.eql?('[CP-User] Generate Specs'))
             target.build_phases.move(build_phase, 0)
           end
         end
+      end
+    end
+  end
+
+  def fix_deployment_target(installer)
+    return if !installer
+    project = installer.pods_project
+    project_deployment_target = project.build_configurations.first.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+  
+    puts "Make sure all pods deployment target is #{project_deployment_target.green}"
+    project.targets.each do |target|
+      puts "  #{target.name}".blue
+      target.build_configurations.each do |config|
+        old_target = config.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+        new_target = project_deployment_target
+        next if old_target == new_target
+        puts "    #{config.name}: #{old_target.yellow} -> #{new_target.green}"
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = new_target
       end
     end
   end

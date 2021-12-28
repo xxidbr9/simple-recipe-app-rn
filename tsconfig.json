@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "jsx": "react-native",
+    "lib": ["es2017"],
+    "moduleResolution": "node",
+    "noEmit": true,
+    "strict": true,
+    "target": "esnext",
+    "paths": {
+      "@assets/images/*": ["./src/assets/images/*"],
+      "@assets/svg/*": ["./src/assets/svg/*"],
+      "@assets/font/*": ["./src/assets/font/*"],
+      "@components/atoms/*": ["./src/components/atoms/*"],
+      "@components/molecules/*": ["./src/components/molecules/*"],
+      "@components/organisms/*": ["./src/components/organisms/*"],
+      "@components/templates/*": ["./src/components/templates/*"],
+      "@network/*": ["./src/network/*"],
+      "@features/*": ["./src/redux-state/features/*"],
+      "@redux-state/*": ["./src/redux-state/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@screens/*": ["./src/screens/*"],
+      "@utils/configs/*": ["./src/utils/configs/*"],
+      "@utils/constants/*": ["./src/utils/constants/*"],
+      "@utils/contexts/*": ["./src/utils/contexts/*"],
+      "@utils/libs/*": ["./src/utils/libs/*"],
+      "@utils/helpers/*": ["./src/utils/helpers/*"],
+      "@utils/hoc/*": ["./src/utils/hoc/*"],
+      "@utils/hooks/*": ["./src/utils/hooks/*"],
+      "@utils/mocks/*": ["./src/utils/mocks/*"],
+      "@utils/types/*": ["./src/utils/types/*"],
+      "@utils/interfaces/*": ["./src/utils/interfaces/*"],
+      "@screen/*": ["./src/screens"],
+      "@app/*": ["./src/*"],
+      "@base/*": ["./*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
+  ]
+}
