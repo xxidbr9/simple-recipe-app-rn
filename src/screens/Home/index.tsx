@@ -5,7 +5,7 @@ const tailwindStyle = require('../../../styles.json');
 import View from '@components/atoms/TailwindText'
 import Text from '@components/atoms/TailwindView'
 import { StatusBar } from 'expo-status-bar'
-import { FlatList, Image, Platform, StyleSheet, TouchableOpacity as RNTouchable, TouchableOpacity } from 'react-native'
+import { FlatList, Image, Platform, StyleSheet, TouchableOpacity as RNTouchable, TouchableOpacity, Dimensions } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Feed } from '@utils/interfaces/list'
 import feedListNetwork from '@network/feed/list'
@@ -27,6 +27,10 @@ import Container from '@components/atoms/Container';
 import { SharedElement } from 'react-navigation-shared-element';
 import CardBottomInfo from '@components/molecules/CardBottomInfo';
 
+import LinearGradient from 'react-native-linear-gradient';
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder'
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+
 const TWTouchableOpacity = withTailwind(TouchableOpacity)
 
 type HomeScreenProps<T extends keyof RootStackParamList> = {
@@ -36,6 +40,7 @@ type HomeScreenProps<T extends keyof RootStackParamList> = {
 
 
 const HomeScreen: React.FC<HomeScreenProps<`home`>> = (props) => {
+  const { width } = Dimensions.get("screen")
   const max = 10
   const navigation = useNavigation();
   let flatListValue = useRef(new Animated.Value()).current
@@ -53,7 +58,8 @@ const HomeScreen: React.FC<HomeScreenProps<`home`>> = (props) => {
         setErr(error)
         console.error(error)
       }
-    })().finally(() => setIsFeedLoading(false))
+    })
+      // ().finally(() => setIsFeedLoading(false))
   }, [])
 
   const _onSearchPress = () => {
@@ -106,6 +112,18 @@ const HomeScreen: React.FC<HomeScreenProps<`home`>> = (props) => {
             />
           ))
         )}
+        {Array.from({ length: 3 }).map((_, index) => (
+          <SkeletonContent
+            key={`loading-${index}`}
+            containerStyle={{ flex: 1, marginBottom: 24 }}
+            isLoading={isFeedLoading}
+            layout={[
+              { key: 'card-1', width: width - 16 * 2, height: 200, marginBottom: 6 },
+              { key: 'title', width: 320, height: 20, marginBottom: 6 },
+              { key: 'small-desc', width: 180, height: 20, marginBottom: 6 }
+            ]}
+          />
+        ))}
       </Container>
     </Animated.ScrollView>
   )
@@ -114,7 +132,6 @@ const HomeScreen: React.FC<HomeScreenProps<`home`>> = (props) => {
 
 
 // Card
-
 type CardComponentsProps = {
   feed: Feed
   onPress: (feed: Feed) => void
