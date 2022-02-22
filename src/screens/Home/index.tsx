@@ -59,7 +59,7 @@ const HomeScreen: React.FC<HomeScreenProps<`home`>> = (props) => {
         console.error(error)
       }
     })
-      // ().finally(() => setIsFeedLoading(false))
+      ().finally(() => setIsFeedLoading(false))
   }, [])
 
   const _onSearchPress = () => {
